@@ -1,0 +1,33 @@
+{
+    "name": "alexbursak/nutricalc",
+    "description": "Calculates protein, carbs and fat ration and optimum amount of calories",
+    "type": "project",
+    "version": "0.1",
+
+    "require": {
+        "php": "7.0.*"
+    },
+
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    },
+
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alex Bursak",
+            "email": "alexbursak3@gmail.com"
+        }
+    ],
+
+    "autoload": {
+        "psr-4": {
+            "NutriCalc\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NutriCalcTest\\": "tests/"
+        }
+    }
+}
