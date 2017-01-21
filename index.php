@@ -12,7 +12,11 @@ if (!file_exists($autoloadFile)) {
 /* SETTINGS */
 $settings = new \NutriCalc\Component\Settings('dev');
 $settings->setAllSettings();
+define('ROOT', __DIR__);
+define('PROJECT_NAME' , 'NutriCalc');
 
 /* DATA BASE CONNECTION */
 
 /* ROUTER */
+$router = new \NutriCalc\Component\Router();
+$router->run();
