@@ -32,6 +32,7 @@ class Router
                 // calling controller action
                 $controllerObject->$actionName();
 
+                break;
             }
         }
     }
