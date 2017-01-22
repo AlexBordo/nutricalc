@@ -18,7 +18,9 @@ class Router
         foreach ($this->routes as $uriPattern => $innerPath) {
             if (preg_match("~$uriPattern~", $uri)){
 
-                $segments = explode(':', $innerPath);
+                $internalRoute = preg_replace("~$uriPattern~", $innerPath, $uri);
+
+                $segments = explode('/', $internalRoute);
 
                 $controllerName = ucfirst(array_shift($segments)) . 'Controller';
                 $actionName = array_shift($segments) . 'Action';
@@ -26,11 +28,10 @@ class Router
                 // generating Controller namespace path
                 $controllerObjectPath = '\\' . PROJECT_NAME . '\Controller\\' . $controllerName;
 
-                // creating Controller Object
                 $controllerObject = new $controllerObjectPath();
 
-                // calling controller action
-                $controllerObject->$actionName();
+                // calling controller action and passing parameters left in $segments
+                call_user_func_array([$controllerObject, $actionName],$segments);
 
                 break;
             }
