@@ -1,22 +1,33 @@
 <?php
 
-/* AUTOLOAD */
-$autoloadFile = __DIR__ . '/vendor/autoload.php';
+/* NAMED CONSTANTS*/
+define('ROOT', __DIR__);
+define('PROJECT_NAME' , 'NutriCalc');
 
-if (!file_exists($autoloadFile)) {
-    die('Composer autoload file does not exists');
-} else {
-    require_once $autoloadFile;
-}
+
+
+/* AUTOLOAD */;
+require_once ROOT . '/vendor/autoload.php';
+
+
 
 /* SETTINGS */
 $settings = new \NutriCalc\Component\Settings('dev');
 $settings->setAllSettings();
-define('ROOT', __DIR__);
-define('PROJECT_NAME' , 'NutriCalc');
+
+
 
 /* DATA BASE CONNECTION */
 
+
+
 /* ROUTER */
-$router = new \NutriCalc\Component\Router();
+if(empty($_SERVER['REQUEST_URI'])){
+    throw new \Exception('\'REQUEST_URI\' is empty');
+}
+
+$uri = trim($_SERVER['REQUEST_URI'], '/');
+$routes = include(ROOT . '/src/config/routes.php');
+
+$router = new \NutriCalc\Component\Router($uri, $routes);
 $router->run();

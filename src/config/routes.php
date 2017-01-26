@@ -10,5 +10,5 @@
  * for 'test/69' uri, indexAction method will be called in TestController and '69' will be passed as a parameter
  */
 return [
-
+    'calc' => 'calculator/calculate'
 ];
