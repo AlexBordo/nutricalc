@@ -2,6 +2,9 @@
 
 namespace NutriCalc\Component;
 
+use NutriCalc\Exception\EmptyRoutesFileException;
+use NutriCalc\Exception\RouteNotFoundException;
+
 class Router
 {
     private $routes;
@@ -15,6 +18,10 @@ class Router
 
     public function run()
     {
+        if (empty($this->routes)){
+            throw new EmptyRoutesFileException();
+        }
+
         foreach ($this->routes as $uriPattern => $innerPath) {
 
             if (preg_match("~^$uriPattern$~", $this->uri)){
@@ -36,7 +43,7 @@ class Router
 
                 break;
             }else{
-                throw new \Exception('No routes found');
+                throw new RouteNotFoundException();
             }
         }
     }
