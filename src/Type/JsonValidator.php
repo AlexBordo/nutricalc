@@ -29,7 +29,7 @@ class JsonValidator
         $this->data = $data;
     }
 
-    public function validateFields()
+    public function isValidateFields()
     {
         if (!$this->isJson()) {
             $this->addError($this::NOT_AN_OBJECT_ERROR);
