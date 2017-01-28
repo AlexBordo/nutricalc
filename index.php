@@ -3,6 +3,7 @@
 /* NAMED CONSTANTS*/
 define('ROOT', dirname(__FILE__));
 define('PROJECT_NAME' , 'NutriCalc');
+define('ROUTES_FILE', ROOT . '/src/config/routes.php')
 
 
 
@@ -24,16 +25,25 @@ $settings->setAllSettings();
 /* ROUTER */
 if(empty($_SERVER['REQUEST_URI'])){
     throw new \Exception('\'REQUEST_URI\' is empty');
+    exit(0);
 }
 
-$uri = trim($_SERVER['REQUEST_URI'], '/');
-$routes = include(ROOT . '/src/config/routes.php');
+$URL = trim($_SERVER['REQUEST_URI'], '/');
 
-$router = new \NutriCalc\Component\Router($uri, $routes);
+if(!file_exists(ROUTES_FILE)){
+    $response = new \NutriCalc\Component\Response('', 'ERROR', 'Routes Does Not Exists', 404);
+    $response->send();
+}
+
+$routes = include(ROUTES_FILE);
+$router = new \NutriCalc\Component\Router($URL, $routes);
 
 try{
     $router->run();
-}catch (\Exception $e){
-    $response = new \NutriCalc\Component\Response('', 'ERROR', $e->getMessage(), 404);
+}catch (\NutriCalc\Exception\RouteNotFoundException $e){
+    $response = new \NutriCalc\Component\Response('', 'ERROR', $e->errorMessage(), 404);
+    $response->send();
+}catch (\NutriCalc\Exception\EmptyRoutesFileException $e){
+    $response = new \NutriCalc\Component\Response('', 'ERROR', $e->errorMessage(), 404);
     $response->send();
 }
