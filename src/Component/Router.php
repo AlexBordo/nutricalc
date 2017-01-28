@@ -10,13 +10,14 @@ class Router
     public function __construct($uri, $routes)
     {
         $this->routes = $routes;
-        $this->uri = $uri;
+        $this->uri = $this->cleanUpURI($uri);
     }
 
     public function run()
     {
         foreach ($this->routes as $uriPattern => $innerPath) {
-            if (preg_match("~$uriPattern~", $this->uri)){
+
+            if (preg_match("~^$uriPattern$~", $this->uri)){
 
                 $internalRoute = preg_replace("~$uriPattern~", $innerPath, $this->uri);
 
@@ -34,7 +35,17 @@ class Router
                 call_user_func_array([$controllerObject, $actionName],$segments);
 
                 break;
+            }else{
+                throw new \Exception('No routes found');
             }
         }
+    }
+
+    private function cleanUpURI($uri)
+    {
+        $uri = explode('?', $uri);
+        $cleanURI = array_shift($uri);
+
+        return $cleanURI;
     }
 }

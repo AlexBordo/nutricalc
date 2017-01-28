@@ -30,4 +30,10 @@ $uri = trim($_SERVER['REQUEST_URI'], '/');
 $routes = include(ROOT . '/src/config/routes.php');
 
 $router = new \NutriCalc\Component\Router($uri, $routes);
-$router->run();
+
+try{
+    $router->run();
+}catch (\Exception $e){
+    $response = new \NutriCalc\Component\Response('', 'ERROR', $e->getMessage(), 404);
+    $response->send();
+}
