@@ -22,7 +22,7 @@ class CalculatorController
 
         $calc = new Calculator((array)$data);
 
-        var_dump($calc);
+        echo json_encode($calc->calcNutritionRatio());
     }
 
 }
