@@ -1,7 +1,7 @@
 <?php
 
 /* NAMED CONSTANTS*/
-define('ROOT', __DIR__);
+define('ROOT', dirname(__FILE__));
 define('PROJECT_NAME' , 'NutriCalc');
 
 
