@@ -5,20 +5,21 @@ namespace NutriCalc\Component;
 class Router
 {
     private $routes;
+    private $uri;
 
-    public function __construct()
+    public function __construct($uri, $routes)
     {
-        $this->routes = include(ROOT . '/src/config/routes.php');
+        $this->routes = $routes;
+        $this->uri = $this->cleanUpURI($uri);
     }
 
     public function run()
     {
-        $uri = $this->getURI();
-
         foreach ($this->routes as $uriPattern => $innerPath) {
-            if (preg_match("~$uriPattern~", $uri)){
 
-                $internalRoute = preg_replace("~$uriPattern~", $innerPath, $uri);
+            if (preg_match("~^$uriPattern$~", $this->uri)){
+
+                $internalRoute = preg_replace("~$uriPattern~", $innerPath, $this->uri);
 
                 $segments = explode('/', $internalRoute);
 
@@ -34,16 +35,17 @@ class Router
                 call_user_func_array([$controllerObject, $actionName],$segments);
 
                 break;
+            }else{
+                throw new \Exception('No routes found');
             }
         }
     }
 
-    private function getURI()
+    private function cleanUpURI($uri)
     {
-        if(!empty($_SERVER['REQUEST_URI'])){
-            return trim($_SERVER['REQUEST_URI'], '/');
-        }else{
-            throw new \Exception('\'REQUEST_URI\' is empty');
-        }
+        $uri = explode('?', $uri);
+        $cleanURI = array_shift($uri);
+
+        return $cleanURI;
     }
 }
