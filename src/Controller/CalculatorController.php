@@ -3,8 +3,8 @@
 namespace NutriCalc\Controller;
 
 use NutriCalc\Component\Response;
-use NutriCalc\Type\Calculator;
-use NutriCalc\Type\JsonValidator;
+use NutriCalc\Resources\Calculator;
+use NutriCalc\Resources\JsonValidator;
 
 class CalculatorController
 {
@@ -14,7 +14,7 @@ class CalculatorController
 
         $validator = new JsonValidator($data);
 
-        if(!$validator->isValidateFields()){
+        if (!$validator->isValidateFields()) {
             $response = new Response('', 'ERROR', $validator->getErrors());
             $response->send();
         }
@@ -26,5 +26,4 @@ class CalculatorController
         $response = new Response($calc->calcNutritionRatio());
         $response->send();
     }
-
 }
