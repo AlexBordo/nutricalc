@@ -1,14 +1,14 @@
 <?php
 
-namespace NutriCalc\Type;
+namespace NutriCalc\Resources;
 
 
 class JsonValidator
 {
-    const NOT_AN_OBJECT_ERROR = 'Invalid data given.';
-    const NOT_VALID_FIELD_ERROR = ' - field is not valid.';
-    const NOT_VALID_KEY_ERROR = ' - key is not valid.';
-    const REQUIRED_KEY_ERROR = ' - required key does not exists.';
+    const NOT_AN_OBJECT_ERROR = 'Invalid data given';
+    const NOT_VALID_FIELD_ERROR = ' - field is not valid';
+    const NOT_VALID_KEY_ERROR = ' - key is not valid';
+    const REQUIRED_KEY_ERROR = ' - required key does not exists';
 
     const REGEX = '/^[a-zA-Z\d]+$/';
 
@@ -81,5 +81,7 @@ class JsonValidator
     private function addError($error)
     {
         array_push($this->errors, $error);
+
+        return $this;
     }
 }

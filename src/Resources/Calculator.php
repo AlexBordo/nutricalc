@@ -1,6 +1,6 @@
 <?php
 
-namespace NutriCalc\Type;
+namespace NutriCalc\Resources;
 
 class Calculator
 {
@@ -27,11 +27,13 @@ class Calculator
         'carbs' => 45,
         'fat' => 20
     ];
+
     const MAINTAIN_RATIO_PERCENTAGE = [
         'protein' => 25,
         'carbs' => 45,
         'fat' => 30
     ];
+
     const LOOSE_RATIO_PERCENTAGE = [
         'protein' => 40,
         'carbs' => 35,

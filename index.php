@@ -25,7 +25,6 @@ $settings->setAllSettings();
 /* ROUTER */
 if(empty($_SERVER['REQUEST_URI'])){
     throw new \Exception('\'REQUEST_URI\' is empty');
-    exit(0);
 }
 
 $URL = trim($_SERVER['REQUEST_URI'], '/');
@@ -36,14 +35,12 @@ if(!file_exists(ROUTES_FILE)){
 }
 
 $routes = include(ROUTES_FILE);
-$router = new \NutriCalc\Component\Router($URL, $routes);
+$router = new \NutriCalc\Component\Router($URL, $routes, PROJECT_NAME);
 
 try{
     $router->run();
-}catch (\NutriCalc\Exception\RouteNotFoundException $e){
-    $response = new \NutriCalc\Component\Response('', 'ERROR', $e->errorMessage(), 404);
-    $response->send();
-}catch (\NutriCalc\Exception\EmptyRoutesFileException $e){
+}catch(\NutriCalc\Exception\RouterException $e){
     $response = new \NutriCalc\Component\Response('', 'ERROR', $e->errorMessage(), 404);
     $response->send();
 }
+

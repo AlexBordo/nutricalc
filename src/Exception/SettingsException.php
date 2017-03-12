@@ -3,10 +3,10 @@
 namespace NutriCalc\Exception;
 
 
-class RouteNotFoundException extends \Exception
+class SettingsException extends \Exception
 {
     public function errorMessage() {
-        $errorMsg = 'Route Not Found';
+        $errorMsg = 'Settings error';
 
         return empty($this->getMessage()) ? $errorMsg : $this->getMessage();
     }
