@@ -36,22 +36,10 @@ if(!file_exists(ROUTES_FILE)){
 
 $routes = include(ROUTES_FILE);
 $router = new \NutriCalc\Component\Router($URL, $routes, PROJECT_NAME);
-$router->run();
-
-var_dump($router);die;
 
 try{
     $router->run();
-}catch (\NutriCalc\Exception\RouteNotFoundException $e){
-    $response = new \NutriCalc\Component\Response('', 'ERROR', $e->errorMessage(), 404);
-    $response->send();
-}catch (\NutriCalc\Exception\EmptyRoutesFileException $e){
-    $response = new \NutriCalc\Component\Response('', 'ERROR', $e->errorMessage(), 404);
-    $response->send();
-}catch (\NutriCalc\Exception\ProjectNameNotSetException $e){
-    $response = new \NutriCalc\Component\Response('', 'ERROR', $e->errorMessage(), 404);
-    $response->send();
-}catch (\NutriCalc\Exception\RouterException $e){
+}catch(\NutriCalc\Exception\RouterException $e){
     $response = new \NutriCalc\Component\Response('', 'ERROR', $e->errorMessage(), 404);
     $response->send();
 }

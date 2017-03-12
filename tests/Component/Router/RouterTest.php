@@ -2,8 +2,8 @@
 namespace NutriCalcTest\ComponentTest;
 
 use NutriCalc\Component\Router;
-use NutriCalc\Fixtures\Router\Controller\RouterController;
 use NutriCalcTest\BaseTestCase;
+use NutriCalcTest\Fixtures\Controller\FakeController;
 
 /**
  * RouterTest
@@ -25,7 +25,7 @@ class RouterTest extends BaseTestCase
     /**
      * @var string
      */
-    public $projectName = 'NutriCalc';
+    public $projectNamespace = 'NutriCalcTest\Fixtures';
 
     public function setUp()
     {
@@ -41,55 +41,70 @@ class RouterTest extends BaseTestCase
     {
         $urlCall = 'calc';
 
-        $router = new Router($urlCall, $this->routes, $this->projectName);
+        $router = new Router($urlCall, $this->routes, $this->projectNamespace);
         $this->assertInstanceOf(Router::class, $router);
         $this->assertEquals('calc', $router->getUrl());
         $this->assertEquals($this->routes, $router->getRoutes());
-        $this->assertEquals($this->projectName, $router->getProjectName());
+        $this->assertEquals($this->projectNamespace, $router->getProjectNamespace());
     }
 
     /**
-     * Test for EmptyRoutesFileException
+     * Test that Router successfully resolved
+     *
+     * @test
+     */
+    public function RouterSuccessfulResponse()
+    {
+        $router = new Router('fake/asd/123', $this->routes, $this->projectNamespace);
+        $result = $router->run();
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * Test Test for RouterException - routes file error
      *
      * @test
      *
-     * @expectedException \NutriCalc\Exception\EmptyRoutesFileException
+     * @expectedException \NutriCalc\Exception\RouterException
      */
-    public function EmptyRoutesFileException()
+    public function RoutesFileException()
     {
         $urlCall = 'calc';
         $routes = [];
 
-        $router = new Router($urlCall, $routes, $this->projectName);
+        $router = new Router($urlCall, $routes, $this->projectNamespace);
         $router->run();
     }
 
     /**
-     *
+     * Test for RouterException - routes not found
      *
      * @test
      *
-     * @expectedException \NutriCalc\Exception\RouteNotFoundException
+     * @expectedException \NutriCalc\Exception\RouterException
      */
     public function RouteNotFoundException()
     {
         $urlCall = 'calc/not/existing/url/';
 
-        $router = new Router($urlCall, $this->routes, $this->projectName);
+        $router = new Router($urlCall, $this->routes, $this->projectNamespace);
         $router->run();
     }
 
     /**
+     * Test for RouterException - project name error
+     *
      * @test
      *
-     * @expectedException \NutriCalc\Exception\ProjectNameNotSetException
+     * @expectedException \NutriCalc\Exception\RouterException
      */
-    public function ProjectNameNotSetException()
+    public function ProjectNameException()
     {
-        $uri = 'calc';
+        $urlCall = 'calc';
         $projectName = '';
 
-        $router = new Router($uri, $this->routes, $projectName);
+        $router = new Router($urlCall, $this->routes, $projectName);
         $router->run();
     }
 
@@ -106,7 +121,7 @@ class RouterTest extends BaseTestCase
      */
     public function cleanUpUrlMethod()
     {
-        $router = new Router('foo/bar?test=what&excluded=yes', $this->routes, $this->projectName);
+        $router = new Router('foo/bar?test=what&excluded=yes', $this->routes, $this->projectNamespace);
 
         $clearUrl = $this->invokeMethod($router, 'cleanUpUrl', ['foo/bar?test=what&excluded=yes']);
 
@@ -118,7 +133,7 @@ class RouterTest extends BaseTestCase
      */
     public function explodeRouteMethod()
     {
-        $router = new Router($this->url, $this->routes, $this->projectName);
+        $router = new Router($this->url, $this->routes, $this->projectNamespace);
 
         $internalRoute = 'calculator/calculate/param1/param2';
 
@@ -141,7 +156,7 @@ class RouterTest extends BaseTestCase
      */
     public function generateInternalRouteMethod()
     {
-        $router = new Router('calculator/test/param1', $this->routes, $this->projectName);
+        $router = new Router('calculator/test/param1', $this->routes, $this->projectNamespace);
 
         $urlPattern = 'calc/([0-9a-zA-Z]+)';
         $innerPath = 'calculator/test/$1';
@@ -155,13 +170,15 @@ class RouterTest extends BaseTestCase
 
 
     /**
+     * Test Test for RouterException - routes file error
+     *
      * @test
      *
      * @expectedException \NutriCalc\Exception\RouterException
      */
     public function generateControllerObjectMethodException()
     {
-        $router = new Router('router/test', $this->routes, 'RouterTest');
+        $router = new Router('router/test', $this->routes, $this->projectNamespace);
 
         $this->invokeMethod($router, 'generateControllerObject', []);
     }
@@ -171,12 +188,12 @@ class RouterTest extends BaseTestCase
      */
     public function generateControllerObjectMethod()
     {
-        $router = new Router('router/test', $this->routes, 'NutriCalc\Fixtures\Router');
-        $router->setControllerName('RouterController');
+        $router = new Router('router/test', $this->routes, $this->projectNamespace);
+        $router->setControllerName('FakeController');
 
         $controllerObject = $this->invokeMethod($router, 'generateControllerObject', []);
 
-        $this->assertInstanceOf(RouterController::class, $controllerObject);
+        $this->assertInstanceOf(FakeController::class, $controllerObject);
     }
 
     /**
@@ -184,9 +201,37 @@ class RouterTest extends BaseTestCase
      */
     public function setControllerNameMethod()
     {
-        $router = new Router('router/test', $this->routes, 'NutriCalc\Fixtures\Router');
-        $router->setControllerName('RouterController');
+        $router = new Router('router/test', $this->routes, $this->projectNamespace);
+        $router->setControllerName('FakeController');
 
-        $this->assertEquals($router->getControllerName(),'RouterController');
+        $this->assertEquals($router->getControllerName(), 'FakeController');
+    }
+
+    /**
+     * @test
+     */
+    public function setActionNameMethod()
+    {
+        $router = new Router('router/test', $this->routes, $this->projectNamespace);
+        $router->setActionName('testAction');
+
+        $this->assertEquals($router->getActionName(), 'testAction');
+    }
+
+    /**
+     * @test
+     */
+    public function setParametersMethod()
+    {
+        $router = new Router('router/test', $this->routes, $this->projectNamespace);
+
+        $parameters = [
+            'param1',
+            'param2'
+        ];
+
+        $router->setParameters($parameters);
+
+        $this->assertEquals($router->getParameters(), $parameters);
     }
 }

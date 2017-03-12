@@ -3,10 +3,10 @@
 namespace NutriCalc\Exception;
 
 
-class EmptyRoutesFileException extends \Exception
+class RouterException extends \Exception
 {
     public function errorMessage() {
-        $errorMsg = 'No routes found or there are no routes set';
+        $errorMsg = 'Router error';
 
         return empty($this->getMessage()) ? $errorMsg : $this->getMessage();
     }

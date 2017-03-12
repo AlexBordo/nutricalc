@@ -2,9 +2,6 @@
 
 namespace NutriCalc\Component;
 
-use NutriCalc\Exception\EmptyRoutesFileException;
-use NutriCalc\Exception\ProjectNameNotSetException;
-use NutriCalc\Exception\RouteNotFoundException;
 use NutriCalc\Exception\RouterException;
 
 class Router
@@ -27,7 +24,7 @@ class Router
     /**
      * @var string
      */
-    private $projectName;
+    private $projectNamespace;
 
     /**
      * @var string
@@ -44,45 +41,41 @@ class Router
      */
     private $parameters;
 
-    public function __construct($url, $routes, $projectName)
+    public function __construct($url, $routes, $projectNamespace)
     {
         $this->url = $this->cleanUpUrl($url);
         $this->routes = $routes;
-        $this->projectName = $projectName;
+        $this->projectNamespace = $projectNamespace;
     }
 
     /**
-     * Method 'run' making few checks and runs 'execute' if checks are passed
+     * Main method that runs Router
      *
-     * @throws EmptyRoutesFileException
-     * @throws ProjectNameNotSetException
-     * @throws RouteNotFoundException
+     * @throws RouterException
      *
      * @return bool
      */
     public function run()
     {
-        if (empty($this->routes)) {
-            throw new EmptyRoutesFileException();
+        if (empty($this->routes) || !is_array($this->routes)) {
+            throw new RouterException('Routes File Exception');
         }
 
-        if (empty($this->projectName)) {
-            throw new ProjectNameNotSetException();
+        if (empty($this->projectNamespace)) {
+            throw new RouterException('Project Name Exception');
         }
 
-        try {
-            $this->findRoute();
-        } catch (RouterException $e) {
-            // ololo
+        $this->findRoute();
 
-        }
-
-        return $this->execute();
+        return $this->execute($this->generateControllerObject());
     }
 
     /**
+     * Going though all routes and finds first matching route
      *
      * @throws RouterException
+     *
+     * @return bool
      */
     private function findRoute()
     {
@@ -99,15 +92,24 @@ class Router
             }
         }
 
-        throw new RouterException();
+        throw new RouterException('Route Not Found');
     }
 
 
     /**
+     * If Url matches a pattern it replaces inner path parameters' pace holders by url parameters
+     *
+     * @example:
+     * url - 'calc/param1'
+     * pattern - 'calc/([0-9a-zA-Z]+)'
+     * inner path - 'calculator/calculate/$1' - '$1' is a placeholder that will be replaced by url parameter 'param1'
+     *
+     * internal route - 'calculator/calculate/param1'
+     *
      * @param $urlPattern
      * @param $innerPath
      *
-     * @return mixed
+     * @return string
      */
     private function generateInternalRoute($urlPattern, $innerPath)
     {
@@ -117,13 +119,17 @@ class Router
     }
 
     /**
+     * Calls Controller's action and passing parameters for the action if any
      *
+     * @param $controllerObject
+     *
+     * @return bool
      */
-    private function execute()
+    private function execute($controllerObject)
     {
-        $controllerObject = $this->generateControllerObject();
-
         call_user_func_array([$controllerObject, $this->actionName], $this->parameters);
+
+        return true;
     }
 
     /**
@@ -173,6 +179,24 @@ class Router
     }
 
     /**
+     * Generates object of Controller
+     *
+     * @throws RouterException
+     *
+     * @return object
+     */
+    private function generateControllerObject()
+    {
+        $controllerObjectPath = '\\' . $this->projectNamespace . '\Controller\\' . $this->controllerName;
+
+        if (!class_exists($controllerObjectPath)) {
+            throw new RouterException("Controller '{$controllerObjectPath}' Not Found");
+        }
+
+        return new $controllerObjectPath();
+    }
+
+    /**
      * @param string $controllerName
      *
      * @return $this
@@ -194,50 +218,71 @@ class Router
 
     /**
      * @param string $actionName
+     *
+     * @return $this
      */
     public function setActionName($actionName)
     {
         $this->actionName = $actionName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getActionName()
+    {
+        return $this->actionName;
     }
 
     /**
      * @param array $parameters
+     *
+     * @return $this
      */
-    public function setParameters($parameters)
+    public function setParameters(array $parameters)
     {
         $this->parameters = $parameters;
+
+        return $this;
     }
 
     /**
-     * @return mixed
-     * @throws RouterException
+     * @return array
      */
-    private function generateControllerObject()
+    public function getParameters()
     {
-        $controllerObjectPath = '\\' . $this->projectName . '\Controller\\' . $this->controllerName;
-
-        if (!class_exists($controllerObjectPath)) {
-           throw new RouterException("Controller '{$controllerObjectPath}' Not Found!");
-        }
-
-        return new $controllerObjectPath();
+        return $this->parameters;
     }
 
+    /**
+     * @return array
+     */
     public function getRoutes()
     {
         return $this->routes;
     }
 
+    /**
+     * @return string
+     */
     public function getUrl()
     {
         return $this->url;
     }
 
-    public function getProjectName()
+    /**
+     * @return string
+     */
+    public function getProjectNamespace()
     {
-        return $this->projectName;
+        return $this->projectNamespace;
     }
 
+    /**
+     * @return string
+     */
     public function getInternalRoute()
     {
         return $this->internalRoute;
