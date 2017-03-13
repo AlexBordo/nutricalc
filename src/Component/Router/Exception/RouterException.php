@@ -1,6 +1,6 @@
 <?php
 
-namespace NutriCalc\Exception;
+namespace NutriCalc\Component\Router\Exception;
 
 
 class RouterException extends \Exception

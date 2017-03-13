@@ -1,7 +1,7 @@
 <?php
 namespace NutriCalcTest\ComponentTest;
 
-use NutriCalc\Component\Settings;
+use NutriCalc\Component\Settings\Settings;
 use NutriCalcTest\BaseTestCase;
 
 /**
@@ -42,7 +42,7 @@ class SettingsTest extends BaseTestCase
     /**
      * @test
      *
-     * @expectedException \NutriCalc\Exception\SettingsException
+     * @expectedException \NutriCalc\Component\Settings\Exception\SettingsException
      */
     public function SetAllSettingsException()
     {

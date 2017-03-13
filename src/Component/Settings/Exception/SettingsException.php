@@ -1,6 +1,6 @@
 <?php
 
-namespace NutriCalc\Exception;
+namespace NutriCalc\Component\Settings\Exception;
 
 
 class SettingsException extends \Exception

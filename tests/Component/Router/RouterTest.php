@@ -1,7 +1,7 @@
 <?php
 namespace NutriCalcTest\ComponentTest;
 
-use NutriCalc\Component\Router;
+use NutriCalc\Component\Router\Router;
 use NutriCalcTest\BaseTestCase;
 use NutriCalcTest\Fixtures\Controller\FakeController;
 
@@ -66,7 +66,7 @@ class RouterTest extends BaseTestCase
      *
      * @test
      *
-     * @expectedException \NutriCalc\Exception\RouterException
+     * @expectedException \NutriCalc\Component\Router\Exception\RouterException
      */
     public function RoutesFileException()
     {
@@ -82,7 +82,7 @@ class RouterTest extends BaseTestCase
      *
      * @test
      *
-     * @expectedException \NutriCalc\Exception\RouterException
+     * @expectedException \NutriCalc\Component\Router\Exception\RouterException
      */
     public function RouteNotFoundException()
     {
@@ -97,7 +97,7 @@ class RouterTest extends BaseTestCase
      *
      * @test
      *
-     * @expectedException \NutriCalc\Exception\RouterException
+     * @expectedException \NutriCalc\Component\Router\Exception\RouterException
      */
     public function ProjectNameException()
     {
@@ -174,7 +174,7 @@ class RouterTest extends BaseTestCase
      *
      * @test
      *
-     * @expectedException \NutriCalc\Exception\RouterException
+     * @expectedException \NutriCalc\Component\Router\Exception\RouterException
      */
     public function generateControllerObjectMethodException()
     {

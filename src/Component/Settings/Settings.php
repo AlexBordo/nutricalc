@@ -1,9 +1,9 @@
 <?php
 
-namespace NutriCalc\Component;
+namespace NutriCalc\Component\Settings;
 
 
-use NutriCalc\Exception\SettingsException;
+use NutriCalc\Component\Settings\Exception\SettingsException;
 
 class Settings
 {

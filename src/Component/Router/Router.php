@@ -1,8 +1,8 @@
 <?php
 
-namespace NutriCalc\Component;
+namespace NutriCalc\Component\Router;
 
-use NutriCalc\Exception\RouterException;
+use NutriCalc\Component\Router\Exception\RouterException;
 
 class Router
 {

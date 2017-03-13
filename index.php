@@ -13,7 +13,7 @@ require_once ROOT . '/vendor/autoload.php';
 
 
 /* SETTINGS */
-$settings = new \NutriCalc\Component\Settings('dev');
+$settings = new \NutriCalc\Component\Settings\Settings('dev');
 $settings->setAllSettings();
 
 
@@ -37,11 +37,11 @@ if(!file_exists(ROUTES_FILE)){
 }
 
 $routes = include(ROUTES_FILE);
-$router = new \NutriCalc\Component\Router($URL, $routes, PROJECT_NAME);
+$router = new \NutriCalc\Component\Router\Router($URL, $routes, PROJECT_NAME);
 
 try{
     $router->run();
-}catch(\NutriCalc\Exception\RouterException $e){
+}catch(\NutriCalc\Component\Router\Exception\RouterException $e){
     $response = new NutriCalc\Component\Response\ApiErrorResponse();
     $response->setStatusCode(404);
     $response->addError($e->getMessage());
