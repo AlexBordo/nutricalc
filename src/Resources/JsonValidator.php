@@ -2,7 +2,9 @@
 
 namespace NutriCalc\Resources;
 
-
+/**
+ * Class JsonValidator
+ */
 class JsonValidator
 {
     const NOT_AN_OBJECT_ERROR = 'Invalid data given';
@@ -45,11 +47,6 @@ class JsonValidator
         return empty($this->errors) ? true : false;
     }
 
-    public function getErrors()
-    {
-        return (array)$this->errors;
-    }
-
     private function isJson()
     {
         json_decode($this->data);
@@ -76,6 +73,11 @@ class JsonValidator
                 $this->addError($value . $this::REQUIRED_KEY_ERROR);
             }
         }
+    }
+
+    public function getErrors()
+    {
+        return (array)$this->errors;
     }
 
     private function addError($error)
