@@ -2,6 +2,7 @@
 namespace NutriCalcTest\ComponentTest;
 
 use NutriCalc\Component\Router\Router;
+use NutriCalc\Component\Router\Routes;
 use NutriCalcTest\BaseTestCase;
 use NutriCalcTest\Fixtures\Controller\FakeController;
 
@@ -16,9 +17,8 @@ class RouterTest extends BaseTestCase
     public $url = 'calc';
 
     /**
-     * Stores routes as array
      *
-     * @var array
+     * @var Routes
      */
     public $routes;
 
@@ -29,7 +29,7 @@ class RouterTest extends BaseTestCase
 
     public function setUp()
     {
-        $this->routes = include 'routes.php';
+        $this->routes = new Routes(dirname(__FILE__) . '/routes.php');
     }
 
     /**
@@ -44,7 +44,7 @@ class RouterTest extends BaseTestCase
         $router = new Router($urlCall, $this->routes, $this->projectNamespace);
         $this->assertInstanceOf(Router::class, $router);
         $this->assertEquals('calc', $router->getUrl());
-        $this->assertEquals($this->routes, $router->getRoutes());
+        $this->assertEquals($this->routes->getRoutesCollection(), $router->getRoutes());
         $this->assertEquals($this->projectNamespace, $router->getProjectNamespace());
     }
 
@@ -71,7 +71,7 @@ class RouterTest extends BaseTestCase
     public function RoutesFileException()
     {
         $urlCall = 'calc';
-        $routes = [];
+        $routes = new Routes('');
 
         $router = new Router($urlCall, $routes, $this->projectNamespace);
         $router->run();
@@ -113,7 +113,8 @@ class RouterTest extends BaseTestCase
      */
     public function RoutesAreInstanceOfArray()
     {
-        $this->assertTrue(is_array($this->routes));
+        $this->assertTrue(is_array($this->routes->getRoutesCollection()));
+        $this->assertInstanceOf(Routes::class, $this->routes);
     }
 
     /**

@@ -29,14 +29,15 @@ if(empty($_SERVER['REQUEST_URI'])){
 
 $URL = trim($_SERVER['REQUEST_URI'], '/');
 
-if(!file_exists(ROUTES_FILE)){
+try {
+    $routes = new \NutriCalc\Component\Router\Routes(ROUTES_FILE);
+}catch(\NutriCalc\Component\Router\Exception\RouterException $e){
     $response = new NutriCalc\Component\Response\ApiErrorResponse();
     $response->setStatusCode(404);
-    $response->addError('Routes Does Not Exists');
+    $response->addError($e->getMessage());
     $response->send();
 }
 
-$routes = include(ROUTES_FILE);
 $router = new \NutriCalc\Component\Router\Router($URL, $routes, PROJECT_NAME);
 
 try{

@@ -41,10 +41,10 @@ class Router
      */
     private $parameters;
 
-    public function __construct($url, $routes, $projectNamespace)
+    public function __construct($url, RoutesInterface $routes, $projectNamespace)
     {
         $this->url = $this->cleanUpUrl($url);
-        $this->routes = $routes;
+        $this->routes = $routes->getRoutesCollection();
         $this->projectNamespace = $projectNamespace;
     }
 
@@ -57,10 +57,6 @@ class Router
      */
     public function run()
     {
-        if (empty($this->routes) || !is_array($this->routes)) {
-            throw new RouterException('Routes File Exception');
-        }
-
         if (empty($this->projectNamespace)) {
             throw new RouterException('Project Name Exception');
         }
@@ -79,9 +75,10 @@ class Router
      */
     private function findRoute()
     {
-        foreach ($this->routes as $urlPattern => $internalRoute) {
-            if (preg_match("~^$urlPattern$~", $this->url)) {
-                $internalRoute = $this->generateInternalRoute($urlPattern, $internalRoute);
+        foreach ($this->routes as $key => $route) {
+
+            if (preg_match("~^$route->urlPattern$~", $this->url)) {
+                $internalRoute = $this->generateInternalRoute($route->urlPattern, $route->innerPath);
                 $routeSegments = $this->explodeRoute($internalRoute);
 
                 $this->setControllerName($routeSegments['controllerName']);
