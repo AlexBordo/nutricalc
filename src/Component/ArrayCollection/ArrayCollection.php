@@ -5,7 +5,7 @@ namespace NutriCalc\Component\ArrayCollection;
 /**
  * Class ArrayCollection
  */
-class ArrayCollection
+class ArrayCollection implements ArrayCollectionInterface
 {
     /**
      * @var array
