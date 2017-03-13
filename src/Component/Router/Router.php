@@ -4,7 +4,7 @@ namespace NutriCalc\Component\Router;
 
 use NutriCalc\Component\Router\Exception\RouterException;
 
-class Router
+class Router implements RouterInterface
 {
     /**
      * @var array
