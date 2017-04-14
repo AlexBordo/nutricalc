@@ -10,6 +10,12 @@
  * for 'test/69' uri, indexAction method will be called in TestController and '69' will be passed as a parameter
  */
 return [
-    'test/([0-9]+)' => 'calculator/test/$1',
-    'calc' => 'calculator/calculate'
+    'test/{param1}' => [
+        'calculator:test',
+        'param1' => 'INT'
+    ],
+
+    'calc' => [
+        'calculator:calculate'
+    ],
 ];

@@ -1,7 +1,18 @@
 <?php
 
 return [
-    'calc/([0-9a-zA-Z]+)' => 'calculator/test/$1',
-    'calc' => 'calculator/calculate',
-    'fake/([0-9a-zA-Z]+)/([0-9a-zA-Z]+)' => 'fake/dummy/$1/$2'
+    'calc/{param1}' => [
+        'calculator:test',
+        'param1' => 'INT:3'
+    ],
+
+    'calc' => [
+        'calculator:calculate'
+    ],
+
+    'fake/{param1}/{param2}' => [
+        'fake:dummy',
+        'param1' => 'STR:7',
+        'param2' => 'MIX:10'
+    ]
 ];

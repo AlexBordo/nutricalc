@@ -3,7 +3,6 @@
 namespace NutriCalc\Component\Router;
 
 use NutriCalc\Component\ArrayCollection\ArrayCollection;
-use NutriCalc\Component\Router\Exception\RouterException;
 use NutriCalc\Component\Router\Type\RouteType;
 
 /**
@@ -31,11 +30,9 @@ class Routes implements RoutesInterface
         $this->routesCollection = new ArrayCollection();
         $this->routesRawPath = $routesRawPath;
 
-        if (!file_exists($routesRawPath)) {
-            throw new RouterException("Routes File Not Found in '{$routesRawPath}'");
-        }
+        $routesParser = new RoutesParser($routesRawPath);
 
-        $this->routesRaw = include($routesRawPath);
+        $this->routesRaw = $routesParser->parseRoutes()->getRoutes();
 
         $this->setupRoutes();
     }
