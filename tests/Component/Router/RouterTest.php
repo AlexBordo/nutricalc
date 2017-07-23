@@ -1,8 +1,9 @@
 <?php
-namespace NutriCalcTest\ComponentTest;
+namespace NutriCalcTest\Component\Router;
 
 use NutriCalc\Component\Router\Router;
 use NutriCalc\Component\Router\Routes;
+use NutriCalc\Component\Router\RoutesParser;
 use NutriCalcTest\BaseTestCase;
 use NutriCalcTest\Fixtures\Controller\FakeController;
 
@@ -29,7 +30,10 @@ class RouterTest extends BaseTestCase
 
     public function setUp()
     {
-        $this->routes = new Routes(dirname(__FILE__) . '/routes.php');
+        $routesParser = new RoutesParser(dirname(__FILE__) . '/routes.php');
+        $routes = $routesParser->parseRoutes()->getRoutes();
+
+        $this->routes = new Routes($routes);
     }
 
     /**
@@ -55,7 +59,7 @@ class RouterTest extends BaseTestCase
      */
     public function RouterSuccessfulResponse()
     {
-        $router = new Router('fake/asd/123', $this->routes, $this->projectNamespace);
+        $router = new Router('fake/param/param2', $this->routes, $this->projectNamespace);
         $result = $router->run();
 
         $this->assertTrue($result);
@@ -66,15 +70,15 @@ class RouterTest extends BaseTestCase
      *
      * @test
      *
-     * @expectedException \NutriCalc\Component\Router\Exception\RouterException
+     * expectedException \NutriCalc\Component\Router\Exception\RouterException
      */
     public function RoutesFileException()
     {
-        $urlCall = 'calc';
-        $routes = new Routes('');
-
-        $router = new Router($urlCall, $routes, $this->projectNamespace);
-        $router->run();
+//        $urlCall = 'calc';
+//        $routes = new Routes('');
+//
+//        $router = new Router($urlCall, $routes, $this->projectNamespace);
+//        $router->run();
     }
 
     /**
@@ -106,15 +110,6 @@ class RouterTest extends BaseTestCase
 
         $router = new Router($urlCall, $this->routes, $projectName);
         $router->run();
-    }
-
-    /**
-     * @test
-     */
-    public function RoutesAreInstanceOfArray()
-    {
-        $this->assertTrue(is_array($this->routes->getRoutesCollection()));
-        $this->assertInstanceOf(Routes::class, $this->routes);
     }
 
     /**
