@@ -3,6 +3,7 @@
 namespace NutriCalc\Component\Router;
 
 use NutriCalc\Component\ArrayCollection\ArrayCollection;
+use NutriCalc\Component\Router\Exception\RouterException;
 use NutriCalc\Component\Router\Type\RouteType;
 
 /**
@@ -10,11 +11,6 @@ use NutriCalc\Component\Router\Type\RouteType;
  */
 class Routes implements RoutesInterface
 {
-    /**
-     * @var string
-     */
-    private $routesRawPath;
-
     /**
      * @var array
      */
@@ -25,14 +21,14 @@ class Routes implements RoutesInterface
      */
     private $routesCollection;
 
-    public function __construct($routesRawPath)
+    public function __construct($routes)
     {
         $this->routesCollection = new ArrayCollection();
-        $this->routesRawPath = $routesRawPath;
 
-        $routesParser = new RoutesParser($routesRawPath);
-
-        $this->routesRaw = $routesParser->parseRoutes()->getRoutes();
+        if(empty($routes) || ! is_array($routes)){
+            throw new RouterException('No routes has been set');
+        }
+        $this->routesRaw = $routes;
 
         $this->setupRoutes();
     }

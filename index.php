@@ -1,5 +1,4 @@
 <?php
-
 /* NAMED CONSTANTS */
 define('ROOT', dirname(__FILE__));
 define('PROJECT_NAMESPACE', 'NutriCalc');

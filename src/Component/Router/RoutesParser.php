@@ -7,9 +7,7 @@ use NutriCalc\Component\Router\Exception\RouterException;
 class RoutesParser
 {
     const INT = '[0-9]';
-
     const STR = '[a-zA-Z]';
-
     const MIX = '[0-9a-zA-Z]';
 
     const PARAM_MAX_LEN = '100';
@@ -25,16 +23,22 @@ class RoutesParser
     ];
 
     /**
+     * Path to routes file
+     *
      * @var string
      */
     private $routesPath;
 
     /**
+     * Stores array of raw routes
+     *
      * @var array
      */
     private $routesRaw;
 
     /**
+     * Stores array of parsed routes
+     *
      * @var array
      */
     private $routes = [];
@@ -51,7 +55,7 @@ class RoutesParser
     }
 
     /**
-     * Transforms routes configuration file to
+     * Transforms routes configuration file to Router readable format
      *
      * @return $this
      */
@@ -61,7 +65,7 @@ class RoutesParser
 
             $innerPath = preg_replace('~:~', '/', array_shift($routeParams));
 
-            $originalUrl = $url;
+            $paramsQuantity = $this->countParams($url);
 
             foreach ($routeParams as $param => $rule) {
 
@@ -73,19 +77,16 @@ class RoutesParser
                 }
 
                 if (array_key_exists($rules['type'], self::PARAMETERS)) {
+                    // build parameter regex
                     $routeParams[$param] = '(' . self::PARAMETERS[$rules['type']] . '{1,' . $rules['len'] . '})';
 
-                    // replace parameter's placeholder (e.g. '{param1}') by regex
+                    // replace parameter's placeholder in url (e.g. '{param1}') by regex
                     $url = preg_replace("~{{$param}}~", $routeParams[$param], $url);
                 }
             }
 
             // replace not configured parameters placeholders by default regex
             $url = preg_replace(self::FIND_PARAM_REGEX, self::DEFAULT_PARAM_REGEX, $url);
-
-            // find parameters quantity from url
-            preg_match_all(self::FIND_PARAM_REGEX, $originalUrl, $out);
-            $paramsQuantity = count($out[0]);
 
             // append inner path with placeholders for each parameter
             for ($i = 1; $i <= $paramsQuantity; $i++) {
@@ -101,8 +102,29 @@ class RoutesParser
     /**
      * @return array
      */
+    public function getRoutesRaw()
+    {
+        return $this->routesRaw;
+    }
+
+    /**
+     * @return array
+     */
     public function getRoutes()
     {
         return $this->routes;
+    }
+
+    /**
+     * Finds parameters quantity from url
+     *
+     * @param $url
+     * @return int
+     */
+    private function countParams($url)
+    {
+        preg_match_all(self::FIND_PARAM_REGEX, $url, $out);
+
+        return count($out[0]);
     }
 }

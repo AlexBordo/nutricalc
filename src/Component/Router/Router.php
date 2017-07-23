@@ -77,6 +77,7 @@ class Router implements RouterInterface
     {
         foreach ($this->routes as $key => $route) {
 
+            // consider using 'continie' guiadian
             if (preg_match("~^$route->urlPattern$~", $this->url)) {
                 $internalRoute = $this->generateInternalRoute($route->urlPattern, $route->innerPath);
                 $routeSegments = $this->explodeRoute($internalRoute);
